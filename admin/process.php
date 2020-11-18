@@ -103,6 +103,65 @@ if (isset($_POST['updateFood'])) {
         exit(0);
     }
 
+    // Check Image
+    $foodName = "img/" . $foodImg['name'];
+    $ext = $foodImg['type'];
+    $extF = explode('/', $ext);
+    $tmpname = $foodImg['tmp_name'];
+    $dest = "../" . $foodName;
+
+    // Check if the Extension of image is valid
+    $allowed = array('jpg', 'jpeg', 'png');
+    // $filesize = $profileImg['size'];
+
+    if (!in_array(strtolower($extF[1]), $allowed)) {
+        header("location:update-food.php?errorImg1=image_is_not_valid&name=$name&description=$description&price=$price&category=$category");
+        exit(0);
+    }
+
+    // Check if the image size is valid
+
+    if ($foodImg['size'] > 10000000) {
+        header("location:update-food.php?errorImg2=image_is_only_less_than_10MB&name=$name&description=$description&price=$price&category=$category");
+        exit(0);
+    }
+
+    // var_dump($id);
+    // exit(0);
+
+    // Check if the food image already existed
+    $sql4 = "SELECT * FROM food WHERE food_id <> :id AND food_img = :foodImg";
+    $statement4 = $con->prepare($sql4);
+    $statement4->bindParam(":id", $id, PDO::PARAM_STR);
+    $statement4->bindParam(":foodImg", $foodName, PDO::PARAM_STR);
+    $statement4->execute();
+
+    $foodImg = $statement4->rowCount();
+
+    if ($foodImg >= 1) {
+        header("location:update-food.php?errFoodImg=Food_Image_is_already_taken&name=$name&description=$description&price=$price&category=$category");
+        exit(0);
+    }
+
+
+
+    // Getting the current food image
+    $sql5 = "SELECT * FROM food WHERE food_id = :id";
+    $statement5 = $con->prepare($sql5);
+    $statement5->bindParam(":id", $id, PDO::PARAM_INT);
+    $statement5->execute();
+
+    $FoodImg = $statement5->fetch(PDO::FETCH_ASSOC);
+
+    $currentFood = $FoodImg['food_img'];
+
+    $pathCurrentFood = "../" . $currentFood;
+
+    // Deleting the current food image
+    unlink($pathCurrentFood);
+    // var_dump(unlink($pathCurrentFood));
+    // exit(0);
+
     $sql1 = "UPDATE food SET food_name = :name, food_description = :description, food_price = :price, food_category_name = :category, food_img = :foodImg WHERE food_id = :id";
     $statement1 = $con->prepare($sql1);
     $statement1->bindParam(":name", $name, PDO::PARAM_STR);
@@ -113,6 +172,8 @@ if (isset($_POST['updateFood'])) {
     $statement1->bindParam(":id", $id, PDO::PARAM_INT);
 
     if ($statement1->execute()) {
+        // Uploading the new food image
+        move_uploaded_file($tmpname, $dest);
         header("location:update-food.php?success1=update_food");
     }
 }

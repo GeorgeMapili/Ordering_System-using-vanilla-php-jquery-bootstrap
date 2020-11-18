@@ -78,7 +78,26 @@ if (!$_SESSION['adminname'] && !$_SESSION['adminemail']) {
                 <?php
 
                 if (isset($_POST['delete'])) {
+                    // Food id
                     $id = $_POST['id'];
+
+                    // select the Food image to be deleted
+                    $sq1 = "SELECT * FROM food WHERE food_id = :id";
+                    $statement1 = $con->prepare($sq1);
+                    $statement1->bindParam(":id", $id, PDO::PARAM_INT);
+                    $statement1->execute();
+
+                    $food = $statement1->fetch(PDO::FETCH_ASSOC);
+
+                    $foodImg = $food['food_img'];
+
+                    // Food Path 
+                    $path = "../" . $foodImg;
+
+                    // var_dump($path);
+                    // exit(0);
+
+                    unlink($path);
 
                     $sql = "DELETE FROM food WHERE food_id = :id";
                     $statement = $con->prepare($sql);

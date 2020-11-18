@@ -251,12 +251,12 @@ if (!isset($_SESSION['id'])) {
                 ?>
                     <span class="text-success h3">Profile Image Updated Successfully</span>
                 <?php } ?>
-
+                <?= (isset($_GET['errProfileImg'])) ? '<span style="color: rgb(226, 25, 25);">Profile Image Name is already taken</span>' : ""; ?>
             </h6>
 
             <div class="form-group col-md-6">
                 <label for="">Profile Image</label>
-                <input type="file" name="profileImg" class="form-control">
+                <input type="file" name="profileImg" class="form-control" required>
                 <?= (isset($_GET['errorImg1'])) ? '<span style="color: rgb(226, 25, 25);">Image is not valid(Png,Jpeg,Jpg) Only</span>' : "";  ?>
                 <?= (isset($_GET['errorImg2'])) ? '<span style="color: rgb(226, 25, 25);">Image only less than 2MB are valids</span>' : "";  ?>
             </div>

@@ -104,6 +104,19 @@ if (isset($_SESSION['id'])) {
             exit(0);
         }
 
+        // Check if the user image already existed
+        $sql4 = "SELECT * FROM users WHERE user_img = :userImg";
+        $statement4 = $con->prepare($sql4);
+        $statement4->bindParam(":userImg", $profileName, PDO::PARAM_STR);
+        $statement4->execute();
+
+        $userImg = $statement4->rowCount();
+
+        if ($userImg >= 1) {
+            header("location:register.php?errProfileImg=Profile_Image_Name_already_taken&name=$name&email=$email&address=$address&mobileNumber=$mobileNumber");
+            exit(0);
+        }
+
         move_uploaded_file($tmpname, $dest);
 
         // Password Hash
@@ -167,6 +180,7 @@ if (isset($_SESSION['id'])) {
                 <input type="file" name="profileImg" required><br>
                 <?= (isset($_GET['errorImg1'])) ? '<span style="color: rgb(226, 25, 25);">Image is not valid(Png,Jpeg,Jpg) Only</span>' : "";  ?>
                 <?= (isset($_GET['errorImg2'])) ? '<span style="color: rgb(226, 25, 25);">Image only less than 2MB are valids</span>' : "";  ?>
+                <?= (isset($_GET['errProfileImg'])) ? '<span style="color: rgb(226, 25, 25);">Profile Image Name is already taken</span>' : "";  ?>
             </div>
             <div>
                 <input type="submit" value="Register" name="register">

@@ -120,13 +120,12 @@ if (!$_SESSION['adminname'] && !$_SESSION['adminemail']) {
                         // var_dump($price);
                         // var_dump($category);
                         // // exit(0);
-
+                        $_SESSION['food_ID'] = $id;
                     }
                     ?>
                     <form action="process.php" method="post" enctype="multipart/form-data">
                         <!-- <h2 class="text-center mt-3 mb-3">Profile</h2> -->
-
-                        <input type="hidden" name="id" value="<?= $id; ?>">
+                        <input type="hidden" name="id" value="<?= $_SESSION['food_ID']; ?>">
 
                         <div class="form-group">
                             <label class="lead font-weight-bold">Food Name</label>
@@ -180,6 +179,9 @@ if (!$_SESSION['adminname'] && !$_SESSION['adminemail']) {
                         <div class="form-group">
                             <label class="lead font-weight-bold">Food Image</label>
                             <input type="file" class="form-control" name="foodImg" value="img/img1.jpg">
+                            <?= (isset($_GET['errFoodImg'])) ? '<span style="color: rgb(226, 25, 25);">Food Image already taken</span>' : "";  ?>
+                            <?= (isset($_GET['errorImg1'])) ? '<span style="color: rgb(226, 25, 25);">Image is not valid(Png,Jpeg,Jpg) Only</span>' : "";  ?>
+                            <?= (isset($_GET['errorImg2'])) ? '<span style="color: rgb(226, 25, 25);">Image only less than 10MB are valids</span>' : "";  ?>
                         </div>
 
                         <input type="submit" value="Update" name="updateFood" class="mt-3 btn btn-info">

@@ -230,6 +230,19 @@ if (isset($_POST['updateProfile'])) {
         exit(0);
     }
 
+    // Check if the food image already existed
+    $sql1 = "SELECT * FROM users WHERE user_img = :userImg";
+    $statement1 = $con->prepare($sql1);
+    $statement1->bindParam(":userImg", $profileName, PDO::PARAM_STR);
+    $statement1->execute();
+
+    $foodImg = $statement1->rowCount();
+
+    if ($foodImg >= 1) {
+        header("location:profile.php?errProfileImg=Profile_Image_Name_already_taken");
+        exit(0);
+    }
+
     // Current Profile Img
     $currentProfile = $_SESSION['img'];
 
@@ -243,8 +256,6 @@ if (isset($_POST['updateProfile'])) {
     // exit(0);
     // Remove the old profile
     unlink($path);
-
-
 
     // Add the new Img
     move_uploaded_file($tmpname, $dest);

@@ -90,7 +90,13 @@ if (!$_SESSION['adminname'] && !$_SESSION['adminemail']) {
                     $foodImg = $_FILES['foodImg'];
 
                     //food image name
-                    $foodname = "img/" . $foodImg['name'];
+                    $foodname = "img/" . strtolower($foodImg['name']);
+
+                    // Food Image Temporary name
+                    $foodtemp = $foodImg['tmp_name'];
+
+                    // Destination of the image
+                    $dest = "../" . $foodname;
 
                     // Check if the foodname exist
                     $sql = "SELECT * FROM food WHERE food_name = :name";
@@ -104,6 +110,40 @@ if (!$_SESSION['adminname'] && !$_SESSION['adminemail']) {
                         exit(0);
                     }
 
+                    $ext = $foodImg['type'];
+                    $extF = explode('/', $ext);
+                    // Start
+                    // Check if the Extension of image is valid
+                    $allowed = array('jpg', 'jpeg', 'png');
+                    // $filesize = $profileImg['size'];
+
+                    if (!in_array(strtolower($extF[1]), $allowed)) {
+                        header("location:add-food.php?errorImg1=image_is_not_valid&name=$name&desc=$description&price=$price");
+                        exit(0);
+                    }
+
+                    // Check if the image size is valid
+
+                    if ($foodImg['size'] > 10000000) {
+                        header("location:add-food.php?errorImg2=image_is_only_less_than_10MB&name=$name&desc=$description&price=$price");
+                        exit(0);
+                    }
+
+                    // End
+
+                    // Check if the food image already existed
+                    $sql1 = "SELECT * FROM food WHERE food_img = :foodimg";
+                    $statement1 = $con->prepare($sql1);
+                    $statement1->bindParam(":foodimg", $foodname, PDO::PARAM_STR);
+                    $statement1->execute();
+
+                    $foodImg = $statement1->rowCount();
+
+                    if ($foodImg >= 1) {
+                        header("location:add-food.php?errFoodImg=Food_Image_already_taken&name=$name&desc=$description&price=$price");
+                        exit(0);
+                    }
+
                     $sql = "INSERT INTO food(food_name,food_description,food_price,food_img,food_category_name)VALUES(:name,:desc,:price,:foodImg,:category)";
                     $statement = $con->prepare($sql);
                     $statement->bindParam(":name", $name, PDO::PARAM_STR);
@@ -113,6 +153,7 @@ if (!$_SESSION['adminname'] && !$_SESSION['adminemail']) {
                     $statement->bindParam(":category", $category, PDO::PARAM_STR);
 
                     if ($statement->execute()) {
+                        move_uploaded_file($foodtemp, $dest);
                         header("location:add-food.php?success=Added_new_food");
                     }
                 }
@@ -126,7 +167,8 @@ if (!$_SESSION['adminname'] && !$_SESSION['adminemail']) {
                             <div class="col">
                                 <div class="form-group">
                                     <label>Name</label>
-                                    <input type="text" class="form-control" name="name" required>
+                                    <!-- <input type="text" class="form-control" name="name" required> -->
+                                    <?= (isset($_GET['name'])) ? '<input type="text" class="form-control" value="' . $_GET['name'] . '" name="name" required>' : '<input type="text" class="form-control" name="name" required>';  ?>
                                     <?= (isset($_GET['errFoodName'])) ? '<span style="color: rgb(226, 25, 25);">Food Name is already taken</span>' : ""; ?>
                                 </div>
                             </div>
@@ -170,6 +212,9 @@ if (!$_SESSION['adminname'] && !$_SESSION['adminemail']) {
                                 <div class="form-group">
                                     <label>Food Image</label>
                                     <input type="file" class="form-control" name="foodImg" required>
+                                    <?= (isset($_GET['errFoodImg'])) ? '<span style="color: rgb(226, 25, 25);">Food Image is already taken</span>' : ""; ?>
+                                    <?= (isset($_GET['errorImg1'])) ? '<span style="color: rgb(226, 25, 25);">Image is not valid(Png,Jpeg,Jpg) Only</span>' : "";  ?>
+                                    <?= (isset($_GET['errorImg2'])) ? '<span style="color: rgb(226, 25, 25);">Image only less than 10MB are valids</span>' : "";  ?>
                                 </div>
                             </div>
                         </div>
