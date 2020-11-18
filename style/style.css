@@ -1,0 +1,80 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* Login/Register Start */
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+}
+
+.form-container h1 {
+  font-size: 35px;
+  font-weight: bold;
+  color: rgba(161, 161, 161);
+  margin-bottom: 20px;
+}
+
+.registerBody {
+  background-image: url("../img/bg.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+form {
+  background: rgba(161, 161, 161, 0.8);
+  min-width: 300px;
+  min-height: 300px;
+  padding: 15px;
+  box-shadow: 3px 6px 13px 13px #333;
+}
+
+form div label {
+  display: block;
+  font-size: 17px;
+  padding: 10px 0;
+}
+
+form div input {
+  width: 100%;
+  padding: 10px 10px;
+}
+
+form div input:focus {
+  border: none;
+  outline: none;
+}
+
+form div input[type="password"] {
+  margin-bottom: 10px;
+}
+
+form div input[type="submit"] {
+  margin-bottom: 10px;
+  background: #333;
+  color: #fff;
+  cursor: pointer;
+}
+
+form h2 {
+  color: #333;
+  text-align: center;
+}
+
+form div a {
+  text-decoration: none;
+}
+
+form .classReg {
+  text-align: center;
+}
+
+/* Login/Register End */
+
+/* Nav */

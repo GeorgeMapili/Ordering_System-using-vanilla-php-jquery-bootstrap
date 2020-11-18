@@ -1,0 +1,30 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* Admin */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  /* z-index: 100;*/
+  padding: 70px 0 0 10px;
+  border-right: 1px solid #d3d3d3;
+}
+
+/* Register */
+.success {
+  color: rgb(10, 240, 10);
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Admin Login */
+.error {
+  color: rgb(240, 37, 10);
+  text-align: center;
+  font-weight: bold;
+}
