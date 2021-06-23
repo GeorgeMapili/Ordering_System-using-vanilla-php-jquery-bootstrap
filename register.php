@@ -1,4 +1,5 @@
 <?php
+// Start here
 session_start();
 require_once 'connect.php';
 if (isset($_SESSION['id'])) {
