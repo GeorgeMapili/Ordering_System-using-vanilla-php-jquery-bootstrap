@@ -90,7 +90,7 @@ if (isset($_SESSION['id'])) {
             </div>
         </form>
     </div>
-
+    <div>Hello Friends</div>
 </body>
 
 </html>
